@@ -1,0 +1,7 @@
+﻿@using Entities;
+@model IEnumerable<Person>
+
+@foreach (Person person in Model)
+{
+    <div>@person.PersonName</div>
+}

@@ -1,0 +1,7 @@
+﻿@using Entities;
+@model IEnumerable<Country>
+
+@foreach (Country country in Model)
+{
+    <div>@country.CountryName</div>
+}
