@@ -4,8 +4,8 @@ using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.Add...
-//builder.Environment
-//builder.Configuration
+//builder.Environment...
+//builder.Configuration...
 
 builder.Services.AddControllersWithViews();
 
@@ -23,9 +23,29 @@ builder.Services.AddDbContext<PersonsDbContext>(options => {
 var app = builder.Build();
 
 app.UseStaticFiles();
-app.UseRouting();
+
+// middleware
+app.Use(async (context, next) => {
+    await context.Response.WriteAsync("This is a middleware \n");
+    await next(context);
+});
+
+app.UseRouting(); // enable routing
+
 app.MapControllers();
 
-app.MapGet("/", () => "Hello World!");
+app.Map("/", () => "Hello World!"); // it works for all HTTP methods
+
+app.Map("files/{filename}.{extension}", async context => {
+    string? filename = Convert.ToString(context.Request.RouteValues["filename"]);
+    await context.Response.WriteAsync($"Filename is: {filename}");
+});
+    
+
+app.MapGet("/example1", async (context) => await context.Response.WriteAsync("This is a get request"));
+
+app.MapPost("/example2", async (context) => await context.Response.WriteAsync("This is a post request"));
+
+// app.Run(async (context) => await context.Response.WriteAsync($"The path is: {context.Request.Path}"));
 
 app.Run();
